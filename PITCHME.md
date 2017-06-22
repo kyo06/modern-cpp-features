@@ -12,6 +12,9 @@ C++11 includes the following new language features:
 - [auto](#auto)
 - [lambda expressions](#lambda-expressions)
 - [decltype](#decltype)
+
+---
+
 - [template aliases](#template-aliases)
 - [nullptr](#nullptr)
 - [strongly-typed enums](#strongly-typed-enums)
@@ -21,6 +24,9 @@ C++11 includes the following new language features:
 - [user-defined literals](#user-defined-literals)
 - [explicit virtual overrides](#explicit-virtual-overrides)
 - [final specifier](#final-specifier)
+
+---
+
 - [default functions](#default-functions)
 - [deleted functions](#deleted-functions)
 - [range-based for loops](#range-based-for-loops)
@@ -31,7 +37,7 @@ C++11 includes the following new language features:
 - [non-static data member initializers](#non-static-data-member-initializers)
 - [right angle brackets](#right-angle-brackets)
 
-+++
+---
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -41,6 +47,9 @@ C++11 includes the following new library features:
 - [smart pointers](#smart-pointers)
 - [std::chrono](#stdchrono)
 - [tuples](#tuples)
+
+---
+
 - [std::tie](#stdtie)
 - [std::array](#stdarray)
 - [unordered containers](#unordered-containers)
@@ -73,6 +82,9 @@ C++17 includes the following new language features:
 - [constexpr lambda](#constexpr-lambda)
 - [lambda capture this by value](#lambda-capture-this-by-value)
 - [inline variables](#inline-variables)
+
+---
+
 - [nested namespaces](#nested-namespaces)
 - [structured bindings](#structured-bindings)
 - [selection statements with initializer](#selection-statements-with-initializer)
