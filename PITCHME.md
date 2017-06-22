@@ -979,7 +979,7 @@ auto& f(T& t) {
 }
 
 // Returns a reference to a deduced type.
-auto g = [](auto& x) -> auto& { return f(x); };
+auto g = [] (auto& x) -> { return f(x); };
 int y = 123;
 int& z = g(y); // reference to `y`
 ```
