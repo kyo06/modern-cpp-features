@@ -1,4 +1,4 @@
-# C++17/14/11 : State-of-the-art
+# C++ 11/14/17 : State-of-the-art
 
 
 ---
