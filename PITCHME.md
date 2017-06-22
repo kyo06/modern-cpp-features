@@ -910,7 +910,7 @@ It is possible to separate digits with `'`.
 ### Generic lambda expressions
 C++14 now allows the `auto` type-specifier in the parameter list, enabling polymorphic lambdas.
 ```c++
-auto identity = [](auto x) { return x; };
+auto identity = [] (auto x) { return x; };
 int three = identity(3); // == 3
 std::string foo = identity("foo"); // == "foo"
 ```
