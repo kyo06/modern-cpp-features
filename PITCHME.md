@@ -8,7 +8,7 @@
 Dr. Mohammed REZGUI
 specialized in Constraint programming and Data mining
 
---
+---
 
 ## Plan
 
@@ -135,6 +135,8 @@ Moves also make it possible to transfer objects such as `std::unique_ptr`s, [sma
 ### Rvalue references
 C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `A` is created with the syntax `A&&`. This enables two major features: move semantics; and _perfect forwarding_, the ability to pass arguments while maintaining information about them as lvalues/rvalues in a generic way.
 
+---
+
 `auto` type deduction with lvalues and rvalues:
 ```c++
 int x = 0; // `x` is an lvalue of type `int`
@@ -150,6 +152,9 @@ auto&& ar = 0; // `ar` is an lvalue of type `int&&`
 
 ### Variadic templates
 The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
+
+---
+
 ```c++
 template <typename... T>
 struct arity {
@@ -163,6 +168,9 @@ static_assert(arity<char, short, int>::value == 3);
 
 ### Initializer lists
 A lightweight array-like container of elements created using a "braced list" syntax. For example, `{ 1, 2, 3 }` creates a sequences of integers, that has type `std::initializer_list<int>`. Useful as a replacement to passing a vector of objects to a function.
+
+---
+
 ```c++
 int sum(const std::initializer_list<int>& list) {
   int total = 0;
@@ -230,12 +238,18 @@ add(1, 2.0); // == 3.0
 add(1.5, 1.5); // == 3.0
 ```
 
+---
+
 The trailing return type in the above example is the _declared type_ (see section on [`decltype`](#decltype)) of the expression `x + y`. For example, if `x` is an integer and `y` is a double, `decltype(x + y)` is a double. Therefore, the above function will deduce the type depending on what type the expression `x + y` yields. Notice that the trailing return type has access to its parameters, and `this` when appropriate.
 
 ---
 
 ### Lambda expressions
-A `lambda` is an unnamed function object capable of capturing variables in scope. It features: a _capture list_; an optional set of parameters with an optional trailing return type; and a body. Examples of capture lists:
+A `lambda` is an unnamed function object capable of capturing variables in scope. It features: a _capture list_; an optional set of parameters with an optional trailing return type; and a body. 
+
+---
+
+Examples of capture lists:
 * `[]` - captures nothing.
 * `[=]` - capture local objects (local variables, parameters) in scope by value.
 * `[&]` - capture local objects (local variables, parameters) in scope by reference.
@@ -316,7 +330,7 @@ C++11 introduces a new null pointer type designed to replace C's `NULL` macro. `
 void foo(int);
 void foo(char*);
 foo(NULL); // error -- ambiguous
----
+
 foo(nullptr); // calls foo(char*)
 ```
 
