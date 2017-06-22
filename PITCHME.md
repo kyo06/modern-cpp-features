@@ -261,13 +261,13 @@ Examples of capture lists:
 ```c++
 int x = 1;
 
-auto getX = [=]{ return x; };
+auto getX = [=] { return x; };
 getX(); // == 1
 
-auto addX = [=](int y) { return x + y; };
+auto addX = [=] (int y) { return x + y; };
 addX(1); // == 2
 
-auto getXRef = [&]() -> int& { return x; };
+auto getXRef = [&] () -> int& { return x; };
 getXRef(); // int& to `x`
 ```
 ---
@@ -946,6 +946,9 @@ auto task1 = [=] { *p = 5; }; // ERROR: std::unique_ptr cannot be copied
 auto task2 = [p = std::move(p)] { *p = 5; }; // OK: p is move-constructed into the closure object
 // the original p is empty after task2 is created
 ```
+
+---
+
 Using this reference-captures can have different names than the referenced variable.
 ```c++
 auto x = 1;
