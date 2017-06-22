@@ -1321,6 +1321,10 @@ A character literal that begins with `u8` is a character literal of type `char`.
 ```c++
 char x = u8'x';
 ```
+```c++
+string s = u8"Hello";
+```
+
 ---
 
 ### Direct List Initialization of Enums
