@@ -259,6 +259,8 @@ getXRef(); // int& to `x`
 ---
 
 By default, value-captures cannot be modified inside the lambda because the compiler-generated method is marked as `const`. The `mutable` keyword allows modifying captured variables. The keyword is placed after the parameter-list (which must be present even if it is empty).
+
+
 ```c++
 int x = 1;
 
@@ -283,6 +285,8 @@ int&& f = 1; // `f` is declared as type `int&&`
 decltype(f) g = 1; // `decltype(f) is `int&&`
 decltype((a)) h = g; // `decltype((a))` is int&
 ```
+---
+
 ```c++
 template <typename X, typename Y>
 auto add(X x, Y y) -> decltype(x + y) {
@@ -360,6 +364,9 @@ int b = square2(2); // mov edi, 2
                     // mov DWORD PTR [rbp-8], eax
 ```
 
+---
+
+
 `constexpr` values are those that the compiler can evaluate at compile-time:
 ```c++
 const int x = 123;
@@ -367,7 +374,7 @@ constexpr const int& y = x; // error -- constexpr variable `y` must be initializ
 ```
 ---
 
-stant expressions with classes:
+Constant expressions with classes:
 ```c++
 struct Complex {
   constexpr Complex(double r, double i) : re(r), im(i) { }
@@ -382,6 +389,9 @@ private:
 constexpr Complex I(0, 1);
 ```
 
+---
+
+
 ### Delegating constructors
 Constructors can now call other constructors in the same class using an initializer list.
 ```c++
@@ -395,8 +405,13 @@ Foo foo{};
 foo.foo; // == 0
 ```
 
+---
+
+
 ### User-defined literals
 User-defined literals allow you to extend the language and add your own syntax. To create a literal, define a `T operator "" X(...) { ... }` function that returns a type `T`, with a name `X`. Note that the name of this function defines the name of the literal. Any literal names not starting with an underscore are reserved and won't be invoked. There are rules on what parameters a user-defined literal function should accept, according to what type the literal is called on.
+
+---
 
 Converting Celsius to Fahrenheit:
 ```c++
@@ -407,6 +422,8 @@ long long operator "" _celsius(unsigned long long tempCelsius) {
 24_celsius; // == 75
 ```
 
+---
+
 String to integer conversion:
 ```c++
 // `const char*` and `std::size_t` required as parameters.
@@ -416,6 +433,8 @@ int operator "" _int(const char* str, std::size_t) {
 
 "123"_int; // == 123, with type `int`
 ```
+
+---
 
 ### Explicit virtual overrides
 Specifies that a virtual function overrides another virtual function. If the virtual function does not override a parent's virtual function, throws a compiler error.
@@ -431,6 +450,8 @@ struct B : A {
   void baz() override; // error -- B::baz does not override A::baz
 };
 ```
+
+---
 
 ### Final specifier
 Specifies that a virtual function cannot be overridden in a derived class or that a class cannot be inherited from.
@@ -448,6 +469,8 @@ struct C : B {
 };
 ```
 
+---
+
 Class cannot be inherited from.
 ```c++
 struct A final {
@@ -458,6 +481,8 @@ struct B : A { // error -- base 'A' is marked 'final'
 
 };
 ```
+
+---
 
 ### Default functions
 A more elegant, efficient way to provide a default implementation of a function, such as a constructor.
@@ -470,6 +495,8 @@ struct A {
 A a{}; // a.x == 1
 A a2{ 123 }; // a.x == 123
 ```
+
+---
 
 With inheritance:
 ```c++
@@ -485,6 +512,8 @@ struct C : B {
 
 C c{}; // c.x == 1
 ```
+
+---
 
 ### Deleted functions
 A more elegant, efficient way to provide a deleted implementation of a function. Useful for preventing copies on objects.
@@ -503,6 +532,8 @@ A y = x; // error -- call to deleted copy constructor
 y = x; // error -- operator= deleted
 ```
 
+---
+
 ### Range-based for loops
 Syntactic sugar for iterating over a container's elements.
 ```c++
@@ -511,12 +542,16 @@ for (int& x : a) x *= 2;
 // a == { 2, 4, 6, 8, 10 }
 ```
 
+---
+
 Note the difference when using `int` as opposed to `int&`:
 ```c++
 std::array<int, 5> a{ 1, 2, 3, 4, 5 };
 for (int x : a) x *= 2;
 // a == { 1, 2, 3, 4, 5 }
 ```
+
+---
 
 ### Special member functions for move semantics
 The copy constructor and copy assignment operator are called when copies are made, and with C++11's introduction of move semantics, there is now a move constructor and move assignment operator for moves.
@@ -543,6 +578,8 @@ a2 = std::move(a3); // move-assignment using std::move
 a1 = f(A{}); // move-assignment from rvalue temporary
 ```
 
+---
+
 ### Converting constructors
 Converting constructors will convert values of braced list syntax into constructor arguments.
 ```c++
@@ -558,6 +595,8 @@ A c = {0, 0}; // calls A::A(int, int)
 A d{0, 0, 0}; // calls A::A(int, int, int)
 ```
 
+---
+
 Note that the braced list syntax does not allow narrowing:
 ```c++
 struct A {
@@ -567,6 +606,8 @@ struct A {
 A a(1.1); // OK
 A b{1.1}; // Error narrowing conversion from double to int
 ```
+
+---
 
 Note that if a constructor accepts a `std::initializer_list`, it will be called instead:
 ```c++
@@ -582,6 +623,8 @@ A b(0, 0); // calls A::A(int, int)
 A c = {0, 0}; // calls A::A(std::initializer_list<int>)
 A d{0, 0, 0}; // calls A::A(std::initializer_list<int>)
 ```
+
+---
 
 ### Explicit conversion functions
 Conversion functions can now be made explicit using the `explicit` specifier.
@@ -602,6 +645,9 @@ B b{};
 if (b); // OK calls B::operator bool()
 bool bb = b; // error copy-initialization does not consider B::operator bool()
 ```
+
+---
+
 ### Inline namespaces
 All members of an inline namespace are treated as if they were part of its parent namespace, allowing specialization of functions and easing the process of versioning. This is a transitive property, if A contains B, which in turn contains C and both B and C are inline namespaces, C's members can be used as if they were on A.
 
@@ -621,6 +667,8 @@ int oldVersion {Program::Version1::getVersion()}; // Uses getVersion() from Vers
 bool firstVersion {Program::isFirstVersion()};    // Does not compile when Version2 is added
 ```
 
+---
+
 ### Non-static data member initializers
 Allows non-static data members to be initialized where they are declared, potentially cleaning up constructors of default initializations.
 
@@ -638,6 +686,7 @@ class Human {
 };
 ```
 
+---
 
 ### Right angle Brackets
 C++11 is now able to infer when a series of right angle brackets is used as an operator or as a closing statement of typedef, without having to add whitespace.
@@ -647,7 +696,11 @@ typedef std::map<int, std::map <int, std::map <int, int> > > cpp98LongTypedef;
 typedef std::map<int, std::map <int, std::map <int, int>>>   cpp11LongTypedef;
 ```
 
+---
+
 ## C++11 Library Features
+
+---
 
 ### std::move
 `std::move` indicates that the object passed to it may be moved, or in other words, moved from one object to another without a copy. The object passed in should not be used after the move in certain situations.
@@ -660,6 +713,8 @@ typename remove_reference<T>::type&& move(T&& arg) {
 }
 ```
 
+---
+
 Transferring `std::unique_ptr`s:
 ```c++
 std::unique_ptr<int> p1{ new int };
@@ -667,6 +722,8 @@ std::unique_ptr<int> p2 = p1; // error -- cannot copy unique pointers
 std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p2`
                                          // now unsafe to dereference object held by `p1`
 ```
+
+---
 
 ### std::forward
 Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. Forwarding gets its power from _template argument deduction_:
@@ -682,6 +739,8 @@ T&& forward(typename remove_reference<T>::type& arg) {
   return static_cast<T&&>(arg);
 }
 ```
+
+---
 
 An example of a function `wrapper` which just forwards other `A` objects to a new `A` object's copy or move constructor:
 ```c++
@@ -702,12 +761,16 @@ wrapper(a); // copied
 wrapper(std::move(a)); // moved
 ```
 
+---
+
 ### std::to_string
 Converts a numeric argument to a `std::string`.
 ```c++
 std::to_string(1.2); // == "1.2"
 std::to_string(123); // == "123"
 ```
+
+---
 
 ### Type traits
 Type traits defines a compile-time template-based interface to query or modify the properties of types.
@@ -716,6 +779,8 @@ static_assert(std::is_integral<int>::value == 1);
 static_assert(std::is_same<int, int>::value == 1);
 static_assert(std::is_same<std::conditional<true, int, double>::type, int>::value == 1);
 ```
+
+---
 
 ### Smart pointers
 C++11 introduces new smart(er) pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17. `std::unique_ptr` is a non-copyable, movable smart pointer that properly manages arrays and STL containers.
@@ -734,6 +799,8 @@ if (p1) p1->bar();
 // `Foo` instance is destroyed when `p1` goes out of scope
 ```
 
+---
+
 ### std::chrono
 The chrono library contains a set of utility functions and types that deal with _durations_, _clocks_, and _time points_. One use case of this library is benchmarking code:
 ```c++
@@ -746,6 +813,7 @@ std::chrono::duration<double> elapsed_seconds = end-start;
 
 elapsed_seconds.count(); // t number of seconds, represented as a `double`
 ```
+---
 
 ### Tuples
 Tuples are a fixed-size collection of heterogeneous values. Access the elements of a `std::tuple` by unpacking using [`std::tie`](#stdtie), or using `std::get`.
@@ -756,6 +824,8 @@ std::get<0>(playerProfile); // 51
 std::get<1>(playerProfile); // "Frans Nielsen"
 std::get<2>(playerProfile); // "NYI"
 ```
+
+---
 
 ### std::tie
 Creates a tuple of lvalue references. Useful for unpacking `std::pair` and `std::tuple` objects. Use `std::ignore` as a placeholder for ignored values. In C++17, structured bindings should be used instead.
@@ -769,6 +839,8 @@ std::string yes, no;
 std::tie(yes, no) = std::make_pair("yes", "no");
 ```
 
+---
+
 ### std::array
 `std::array` is a container built on top of a C-style array. Supports common container operations such as sorting.
 ```c++
@@ -777,6 +849,8 @@ std::sort(a.begin(), a.end()); // a == { 1, 2, 3 }
 for (int& x : a) x *= 2; // a == { 2, 4, 6 }
 ```
 
+---
+
 ### Unordered containers
 These containers maintain average constant-time complexity for search, insert, and remove operations. In order to achieve constant-time complexity, sacrifices order for speed by hashing elements into buckets. There are four unordered containers:
 * `unordered_set`
@@ -784,12 +858,16 @@ These containers maintain average constant-time complexity for search, insert, a
 * `unordered_map`
 * `unordered_multimap`
 
+---
+
 ### Memory model
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
 
 ---
 
 ## C++14 Language Features
+
+---
 
 ### Binary literals
 Binary literals provide a convenient way to represent a base-2 number.
@@ -799,6 +877,8 @@ It is possible to separate digits with `'`.
 0b1111'1111 // == 255
 ```
 
+---
+
 ### Generic lambda expressions
 C++14 now allows the `auto` type-specifier in the parameter list, enabling polymorphic lambdas.
 ```c++
@@ -806,6 +886,8 @@ auto identity = [](auto x) { return x; };
 int three = identity(3); // == 3
 std::string foo = identity("foo"); // == "foo"
 ```
+
+---
 
 ### Lambda capture initializers
 This allows creating lambda captures initialized with arbitrary expressions. The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).
@@ -821,6 +903,9 @@ auto a = generator(); // == 0
 auto b = generator(); // == 1
 auto c = generator(); // == 2
 ```
+
+---
+
 Because it is now possible to _move_ (or _forward_) values into a lambda that could previously be only captured by copy or reference we can now capture move-only types in a lambda by value. Note that in the below example the `p` in the capture-list of `task2` on the left-hand-side of `=` is a new variable private to the lambda body and does not refer to the original `p`.
 ```c++
 auto p = std::make_unique<int>(1);
@@ -840,6 +925,8 @@ auto f = [&r = x, x = x * 10] {
 f(); // sets x to 2 and returns 12
 ```
 
+---
+
 ### Return type deduction
 Using an `auto` return type in C++14, the compiler will attempt to deduce the type for you. With lambdas, you can now deduce its return type using `auto`, which makes returning a deduced reference or rvalue reference possible.
 ```c++
@@ -848,6 +935,9 @@ auto f(int i) {
  return i;
 }
 ```
+
+---
+
 ```c++
 template <typename T>
 auto& f(T& t) {
@@ -859,6 +949,8 @@ auto g = [](auto& x) -> auto& { return f(x); };
 int y = 123;
 int& z = g(y); // reference to `y`
 ```
+
+---
 
 ### decltype(auto)
 The `decltype(auto)` type-specifier also deduces a type like `auto` does. However, it deduces return types while keeping their references or "const-ness", while `auto` will not.
@@ -874,6 +966,9 @@ int&& z = 0;
 auto z1 = std::move(z); // int
 decltype(auto) z2 = std::move(z); // int&&
 ```
+
+---
+
 ```c++
 // Note: Especially useful for generic code!
 
@@ -893,6 +988,8 @@ static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
 
+---
+
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
 ```c++
@@ -906,6 +1003,8 @@ constexpr int factorial(int n) {
 factorial(5); // == 120
 ```
 
+---
+
 ### Variable Templates
 C++14 allows variables to be templated:
 
@@ -916,7 +1015,11 @@ template<class T>
 constexpr T e  = T(2.7182818284590452353);
 ```
 
+---
+
 ## C++14 Library Features
+
+---
 
 ### User-defined literals for standard library types
 New user-defined literals for standard library types, including new built-in literals for `chrono` and `basic_string`. These can be `constexpr` meaning they can be used at compile-time. Some uses for these literals include compile-time integer parsing, binary literals, and imaginary number literals.
@@ -926,6 +1029,8 @@ auto day = 24h;
 day.count(); // == 24
 std::chrono::duration_cast<std::chrono::minutes>(day).count(); // == 1440
 ```
+
+---
 
 ### Compile-time integer sequences
 The class template `std::integer_sequence` represents a compile-time sequence of integers. There are a few helpers built on top:
@@ -947,6 +1052,8 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 ---
 
 ## C++17 Language Features
+
+---
 
 ### Template argument deduction for class templates
 Automatic template argument deduction much like how it's done for functions, but now including class constructors.
@@ -1003,6 +1110,8 @@ auto sum(Args... args) {
 sum(1.0, 2.0f, 3); // == 6.0
 ```
 
+---
+
 ### New rules for auto deduction from braced-init-list
 Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x{ 3 };` deduces a `std::initializer_list<int>`, which now deduces to `int`.
 ```c++
@@ -1011,6 +1120,8 @@ auto x2 = { 1, 2, 3 }; // decltype(x2) is std::initializer_list<int>
 auto x3{ 3 }; // decltype(x3) is int
 auto x4{ 3.0 }; // decltype(x4) is double
 ```
+
+---
 
 ### constexpr lambda
 Compile-time lambdas using `constexpr`.
@@ -1035,6 +1146,8 @@ constexpr int addOne(int n) {
 static_assert(addOne(1) == 2);
 ```
 
+---
+
 ### Lambda capture `this` by value
 Capturing `this` in a lambda's environment was previously reference-only. An example of where this is problematic is asynchronous code using callbacks that require an object to be available, potentially past its lifetime. `*this` (C++17) will now make a copy of the current object, while `this` (C++11) continues to capture by reference.
 ```c++
@@ -1055,6 +1168,8 @@ valueCopy(); // 123
 valueRef(); // 321
 ```
 
+---
+
 ### Inline variables
 The inline specifier can be applied to variables as well as to functions. A variable declared inline has the same semantics as a function declared inline.
 ```c++
@@ -1067,6 +1182,8 @@ S x2 = S{123};        // mov eax, dword ptr [.L_ZZ4mainE2x2]
                       // mov dword ptr [rbp - 8], eax
                       // .L_ZZ4mainE2x2: .long 123
 ```
+
+---
 
 ### Nested namespaces
 Using the namespace resolution operator to create nested namespace definitions.
@@ -1084,6 +1201,8 @@ namespace A::B::C {
 }
 ```
 
+---
+
 ### Structured bindings
 A proposal for de-structuring initialization, that would allow writing `auto {x, y, z} = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](#tuples), `std::pair`, [`std::array`](#stdarray), and aggregate structures.
 ```c++
@@ -1096,6 +1215,8 @@ const auto [ x, y ] = origin();
 x; // == 0
 y; // == 0
 ```
+
+---
 
 ### Selection statements with initializer
 New versions of the `if` and `switch` statements which simplify common code patterns and help users keep scopes tight.
@@ -1122,6 +1243,8 @@ switch (Foo gadget(args); auto s = gadget.status()) {
 }
 ```
 
+---
+
 ### constexpr if
 Write code that is instantiated depending on a compile-time condition.
 ```c++
@@ -1140,6 +1263,8 @@ struct S {};
 static_assert(isIntegral<S>() == false);
 ```
 
+---
+
 ### UTF-8 Character Literals
 A character literal that begins with `u8` is a character literal of type `char`. The value of a UTF-8 character literal is equal to its ISO 10646 code point value.
 ```c++
@@ -1156,7 +1281,11 @@ byte d = byte{1}; // OK
 byte e = byte{256}; // ERROR
 ```
 
+---
+
 ## C++17 Library Features
+
+---
 
 ### std::variant
 The class template `std::variant` represents a type-safe `union`. An instance of `std::variant` at any given time holds a value of one of its alternative types (it's also possible for it to be valueless).
@@ -1168,6 +1297,8 @@ v = 12.0;
 std::get<double>(v); // == 12.0
 std::get<1>(v); // == 12.0
 ```
+
+---
 
 ### std::optional
 The class template `std::optional` manages an optional contained value, i.e. a value that may or may not be present. A common use case for optional is the return value of a function that may fail.
@@ -1188,6 +1319,8 @@ if (auto str = create(true)) {
 }
 ```
 
+---
+
 ### std::any
 A type-safe container for single values of any type.
 ```c++
@@ -1197,6 +1330,8 @@ std::any_cast<int>(x) // == 5
 std::any_cast<int&>(x) = 10;
 std::any_cast<int>(x) // == 10
 ```
+
+---
 
 ### std::string_view
 A non-owning reference to a string. Useful for providing an abstraction on top of strings (e.g. for parsing).
@@ -1216,6 +1351,8 @@ v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
 str; //  == "   trim me"
 v; // == "trim me"
 ```
+
+---
 
 ### std::invoke
 Invoke a `Callable` object with parameters. Examples of `Callable` objects are `std::function` or `std::bind` where an object can be called similarly to a regular function.
@@ -1238,6 +1375,8 @@ Proxy<decltype(add)> p{ add };
 p(1, 2); // == 3
 ```
 
+---
+
 ### std::apply
 Invoke a `Callable` object with a tuple of arguments.
 ```c++
@@ -1246,6 +1385,8 @@ auto add = [] (int x, int y) {
 };
 std::apply(add, std::make_tuple( 1, 2 )); // == 3
 ```
+
+---
 
 ### Splicing for maps and sets
 Moving nodes and merging containers without the overhead of expensive copies, moves, or heap allocations/deallocations.
@@ -1259,6 +1400,8 @@ dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from `src
 // dst == { { 1, "one" }, { 2, "two" }, { 3, "three" } };
 ```
 
+---
+
 Inserting an entire set:
 ```c++
 std::set<int> src{1, 3, 5};
@@ -1267,6 +1410,8 @@ dst.merge(src);
 // src == { 5 }
 // dst == { 1, 2, 3, 4, 5 }
 ```
+
+---
 
 Inserting elements which outlive the container:
 ```c++
@@ -1277,6 +1422,8 @@ auto elementFactory() {
 }
 s2.insert(elementFactory());
 ```
+
+---
 
 Changing the key of a map element:
 ```c++
@@ -1298,4 +1445,7 @@ m.insert(std::move(e));
 * [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
 * [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
 * [What are some uses of decltype(auto)?](http://stackoverflow.com/questions/24109737/what-are-some-uses-of-decltypeauto)
-* And many more SO posts I'm forgetting...
+
+---
+
+## Questions
