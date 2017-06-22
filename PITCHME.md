@@ -3,6 +3,7 @@
 ## Overview
 Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
 
+---
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
 - [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
@@ -18,6 +19,8 @@ C++17 includes the following new language features:
 - [utf-8 character literals](#utf-8-character-literals)
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
 
+---
+
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
 - [std::optional](#stdoptional)
@@ -26,6 +29,8 @@ C++17 includes the following new library features:
 - [std::invoke](#stdinvoke)
 - [std::apply](#stdapply)
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
+
+---
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
@@ -36,9 +41,13 @@ C++14 includes the following new language features:
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
 - [variable templates](#variable-templates)
 
+---
+
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
 - [compile-time integer sequences](#compile-time-integer-sequences)
+
+---
 
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
@@ -68,6 +77,8 @@ C++11 includes the following new language features:
 - [non-static data member initializers](#non-static-data-member-initializers)
 - [right angle brackets](#right-angle-brackets)
 
+---
+
 C++11 includes the following new library features:
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
@@ -80,6 +91,8 @@ C++11 includes the following new library features:
 - [std::array](#stdarray)
 - [unordered containers](#unordered-containers)
 - [memory model](#memory-model)
+
+---
 
 ## C++17 Language Features
 
@@ -96,6 +109,7 @@ struct MyContainer {
 MyContainer c1{ 1 }; // OK MyContainer<int>
 MyContainer c2; // OK MyContainer<float>
 ```
+---
 
 ### Declaring non-type template parameters with auto
 Following the deduction rules of `auto`, while respecting the non-type template parameter list of allowable types[\*], template arguments can be deduced from the types of its arguments:
@@ -111,6 +125,8 @@ auto seq = std::integer_sequence<int, 0, 1, 2>();
 auto seq2 = my_integer_sequence<0, 1, 2>();
 ```
 \* - For example, you cannot use a `double` as a template parameter type, which also makes this an invalid deduction using `auto`.
+
+---
 
 ### Folding expressions
 A fold expression performs a fold of a template parameter pack over a binary operator.
