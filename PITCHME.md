@@ -1,9 +1,20 @@
-# C++17/14/11
+# C++17/14/11 : State-of-the-art
 
-## Overview
-Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
 
-C++11 includes the following new language features:
+---
+
+## Presentation
+
+Dr. Mohammed REZGUI
+specialized in Constraint programming and Data mining
+
+--
+
+## Plan
+
+---
+
+C++11 (new language features):
 - [move semantics](#move-semantics)
 - [variadic templates](#variadic-templates)
 - [rvalue references](#rvalue-references)
@@ -39,7 +50,7 @@ C++11 includes the following new language features:
 
 ---
 
-C++11 includes the following new library features:
+C++11 (new library features):
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
 - [std::to_string](#stdto_string)
@@ -57,7 +68,7 @@ C++11 includes the following new library features:
 
 ---
 
-C++14 includes the following new language features:
+C++14 (new language features):
 - [binary literals](#binary-literals)
 - [generic lambda expressions](#generic-lambda-expressions)
 - [lambda capture initializers](#lambda-capture-initializers)
@@ -68,13 +79,13 @@ C++14 includes the following new language features:
 
 ---
 
-C++14 includes the following new library features:
+C++14 (new library features):
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
 - [compile-time integer sequences](#compile-time-integer-sequences)
 
 ---
 
-C++17 includes the following new language features:
+C++17 (new language features):
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
 - [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
 - [folding expressions](#folding-expressions)
@@ -94,7 +105,7 @@ C++17 includes the following new language features:
 
 ---
 
-C++17 includes the following new library features:
+C++17 (new library features):
 - [std::variant](#stdvariant)
 - [std::optional](#stdoptional)
 - [std::any](#stdany)
@@ -111,11 +122,15 @@ C++17 includes the following new library features:
 ### Move semantics
 Move semantics is mostly about performance optimization: the ability to move an object without the expensive overhead of copying. The difference between a copy and a move is that a copy leaves the source unchanged, and a move will leave the source either unchanged or radically different -- depending on what the source is. For plain old data, a move is the same as a copy.
 
+---
+
 To move an object means to transfer ownership of some resource it manages to another object. You could think of this as changing pointers held by the source object to be moved, or now held, by the destination object; the resource remains in its location in memory. Such an inexpensive transfer of resources is extremely useful when the source is an `rvalue`, where the potentially dangerous side-effect of changing the source after the move is redundant since the source is a temporary object that won't be accessible later.
+
+---
 
 Moves also make it possible to transfer objects such as `std::unique_ptr`s, [smart pointers](#smart-pointers) that are designed to hold a pointer to a unique object, from one scope to another.
 
-See the sections on: [rvalue references](#rvalue-references), [defining move special member functions](#special-member-functions-for-move-semantics), [`std::move`](#stdmove), [`std::forward`](#stdforward).
+---
 
 ### Rvalue references
 C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `A` is created with the syntax `A&&`. This enables two major features: move semantics; and _perfect forwarding_, the ability to pass arguments while maintaining information about them as lvalues/rvalues in a generic way.
@@ -131,7 +146,7 @@ auto&& al2 = x; // `al2` is an lvalue of type `int&`
 auto&& ar = 0; // `ar` is an lvalue of type `int&&`
 ```
 
-See also: [`std::move`](#stdmove), [`std::forward`](#stdforward).
+---
 
 ### Variadic templates
 The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
@@ -143,6 +158,8 @@ struct arity {
 static_assert(arity<>::value == 0);
 static_assert(arity<char, short, int>::value == 3);
 ```
+
+---
 
 ### Initializer lists
 A lightweight array-like container of elements created using a "braced list" syntax. For example, `{ 1, 2, 3 }` creates a sequences of integers, that has type `std::initializer_list<int>`. Useful as a replacement to passing a vector of objects to a function.
@@ -162,6 +179,8 @@ sum({ 1, 2, 3 }); // == 6
 sum({}); // == 0
 ```
 
+---
+
 ### Static assertions
 Assertions that are evaluated at compile-time.
 ```c++
@@ -169,6 +188,8 @@ constexpr int x = 0;
 constexpr int y = 1;
 static_assert(x == y, "x != y");
 ```
+
+---
 
 ### auto
 `auto`-typed variables are deduced by the compiler according to the type of their initializer.
@@ -186,6 +207,8 @@ auto l = 1, m = true, n = 1.61; // error -- `l` deduced to be int, `m` is bool
 auto o; // error -- `o` requires initializer
 ```
 
+---
+
 Extremely useful for readability, especially for complicated types:
 ```c++
 std::vector<int> v = ...;
@@ -193,6 +216,8 @@ std::vector<int>::const_iterator cit = v.cbegin();
 // vs.
 auto cit = v.cbegin();
 ```
+
+---
 
 Functions can also deduce the return type using `auto`. In C++11, a return type must be specified either explicitly, or using `decltype` like so:
 ```c++
@@ -204,7 +229,10 @@ add(1, 2); // == 3
 add(1, 2.0); // == 3.0
 add(1.5, 1.5); // == 3.0
 ```
+
 The trailing return type in the above example is the _declared type_ (see section on [`decltype`](#decltype)) of the expression `x + y`. For example, if `x` is an integer and `y` is a double, `decltype(x + y)` is a double. Therefore, the above function will deduce the type depending on what type the expression `x + y` yields. Notice that the trailing return type has access to its parameters, and `this` when appropriate.
+
+---
 
 ### Lambda expressions
 A `lambda` is an unnamed function object capable of capturing variables in scope. It features: a _capture list_; an optional set of parameters with an optional trailing return type; and a body. Examples of capture lists:
@@ -213,6 +241,8 @@ A `lambda` is an unnamed function object capable of capturing variables in scope
 * `[&]` - capture local objects (local variables, parameters) in scope by reference.
 * `[this]` - capture `this` pointer by value.
 * `[a, &b]` - capture objects `a` by value, `b` by reference.
+
+---
 
 ```c++
 int x = 1;
@@ -226,6 +256,8 @@ addX(1); // == 2
 auto getXRef = [&]() -> int& { return x; };
 getXRef(); // int& to `x`
 ```
+---
+
 By default, value-captures cannot be modified inside the lambda because the compiler-generated method is marked as `const`. The `mutable` keyword allows modifying captured variables. The keyword is placed after the parameter-list (which must be present even if it is empty).
 ```c++
 int x = 1;
@@ -236,8 +268,10 @@ auto f2 = [x] { x = 2; }; // ERROR: the lambda can only perform const-operations
 // vs.
 auto f3 = [x] () mutable { x = 2; }; // OK: the lambda can perform any operations on the captured value
 ```
+---
 
 ### decltype
+
 `decltype` is an operator which returns the _declared type_ of an expression passed to it. Examples of `decltype`:
 ```c++
 int a = 1; // `a` is declared as type `int`
@@ -256,6 +290,8 @@ auto add(X x, Y y) -> decltype(x + y) {
 }
 add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
+---
+
 
 ### Template aliases
 Semantically similar to using a `typedef` however, template aliases with `using` are easier to read and are compatible with templates.
@@ -268,14 +304,19 @@ using String = std::string;
 String s{"foo"};
 ```
 
+---
+
 ### nullptr
 C++11 introduces a new null pointer type designed to replace C's `NULL` macro. `nullptr` itself is of type `std::nullptr_t` and can be implicitly converted into pointer types, and unlike `NULL`, not convertible to integral types except `bool`.
 ```c++
 void foo(int);
 void foo(char*);
 foo(NULL); // error -- ambiguous
+---
 foo(nullptr); // calls foo(char*)
 ```
+
+---
 
 ### Strongly-typed enums
 Type-safe enums that solve a variety of problems with C-style enums including: implicit conversions, inability to specify the underlying type, scope pollution.
@@ -287,6 +328,8 @@ enum class Alert : bool { Red, Green };
 Color c = Color::Red;
 ```
 
+---
+
 ### Attributes
 Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, etc.
 ```c++
@@ -295,6 +338,9 @@ Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, e
   throw "error";
 }
 ```
+
+---
+
 
 ### constexpr
 Constant expressions are expressions evaluated by the compiler at compile-time. Only non-complex computations can be carried out in a constant expression. Use the `constexpr` specifier to indicate the variable, function, etc. is a constant expression.
@@ -305,9 +351,9 @@ constexpr int square(int x) {
 
 int square2(int x) {
   return x * x;
-}
+t a = square(2);  // mov DWORD PTR [rbp-4], 4
+---
 
-int a = square(2);  // mov DWORD PTR [rbp-4], 4
 
 int b = square2(2); // mov edi, 2
                     // call square2(int)
@@ -319,8 +365,9 @@ int b = square2(2); // mov edi, 2
 const int x = 123;
 constexpr const int& y = x; // error -- constexpr variable `y` must be initialized by a constant expression
 ```
+---
 
-Constant expressions with classes:
+stant expressions with classes:
 ```c++
 struct Complex {
   constexpr Complex(double r, double i) : re(r), im(i) { }
