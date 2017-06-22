@@ -30,7 +30,7 @@ C++11 (new language features):
 - [nullptr](#nullptr)
 - [strongly-typed enums](#strongly-typed-enums)
 - [attributes](#attributes)
-- [constexpr](#constexpr)
+- [$](#constexpr)
 - [delegating constructors](#delegating-constructors)
 - [user-defined literals](#user-defined-literals)
 - [explicit virtual overrides](#explicit-virtual-overrides)
@@ -372,7 +372,9 @@ constexpr int square(int x) {
 
 int square2(int x) {
   return x * x;
-t a = square(2);  // mov DWORD PTR [rbp-4], 4
+}
+
+int a = square(2);  // mov DWORD PTR [rbp-4], 4
 
 int b = square2(2); // mov edi, 2
                     // call square2(int)
