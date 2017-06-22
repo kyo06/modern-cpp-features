@@ -362,6 +362,9 @@ Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, e
 
 ### constexpr
 Constant expressions are expressions evaluated by the compiler at compile-time. Only non-complex computations can be carried out in a constant expression. Use the `constexpr` specifier to indicate the variable, function, etc. is a constant expression.
+
+---
+
 ```c++
 constexpr int square(int x) {
   return x * x;
@@ -370,8 +373,6 @@ constexpr int square(int x) {
 int square2(int x) {
   return x * x;
 t a = square(2);  // mov DWORD PTR [rbp-4], 4
----
-
 
 int b = square2(2); // mov edi, 2
                     // call square2(int)
@@ -665,6 +666,8 @@ bool bb = b; // error copy-initialization does not consider B::operator bool()
 ### Inline namespaces
 All members of an inline namespace are treated as if they were part of its parent namespace, allowing specialization of functions and easing the process of versioning. This is a transitive property, if A contains B, which in turn contains C and both B and C are inline namespaces, C's members can be used as if they were on A.
 
+---
+
 ```c++
 namespace Program {
   namespace Version1 {
@@ -740,11 +743,17 @@ std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p2`
 ---
 
 ### std::forward
-Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. Forwarding gets its power from _template argument deduction_:
+Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. 
+
+---
+
+Forwarding gets its power from _template argument deduction_:
 * `T& &` becomes `T&`
 * `T& &&` becomes `T&`
 * `T&& &` becomes `T&`
 * `T&& &&` becomes `T&&`
+
+---
 
 A definition of `std::forward`:
 ```c++
@@ -798,6 +807,9 @@ static_assert(std::is_same<std::conditional<true, int, double>::type, int>::valu
 
 ### Smart pointers
 C++11 introduces new smart(er) pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17. `std::unique_ptr` is a non-copyable, movable smart pointer that properly manages arrays and STL containers.
+
+---
+
 ```c++
 std::unique_ptr<Foo> p1(new Foo);  // `p1` owns `Foo`
 if (p1) p1->bar();
@@ -905,6 +917,9 @@ std::string foo = identity("foo"); // == "foo"
 
 ### Lambda capture initializers
 This allows creating lambda captures initialized with arbitrary expressions. The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).
+
+---
+
 ```c++
 int factory(int i) { return i * 10; }
 auto f = [x = factory(2)] { return x; }; // returns 20
@@ -1006,6 +1021,9 @@ static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
+
+---
+
 ```c++
 constexpr int factorial(int n) {
   if (n <= 1) {
@@ -1050,6 +1068,8 @@ std::chrono::duration_cast<std::chrono::minutes>(day).count(); // == 1440
 The class template `std::integer_sequence` represents a compile-time sequence of integers. There are a few helpers built on top:
 * `std::make_integer_sequence<T, N...>` - creates a sequence of `0, ..., N - 1` with type `T`.
 * `std::index_sequence_for<T...>` - converts a template parameter pack into an integer sequence.
+
+---
 
 Convert an array into a tuple:
 ```c++
@@ -1105,6 +1125,9 @@ auto seq2 = my_integer_sequence<0, 1, 2>();
 A fold expression performs a fold of a template parameter pack over a binary operator.
 * An expression of the form `(... op e)` or `(e op ...)`, where `op` is a fold-operator and `e` is an unexpanded parameter pack, are called _unary folds_.
 * An expression of the form `(e1 op1 ... op2 e2)`, where `op1` and `op2` are fold-operators, is called a _binary fold_. Either `e1` or `e2` are unexpanded parameter packs, but not both.
+
+---
+
 ```c++
 template<typename... Args>
 bool logicalAnd(Args... args) {
@@ -1115,6 +1138,7 @@ bool b = true;
 bool& b2 = b;
 logicalAnd(b, b2, true); // == true
 ```
+
 ```c++
 template<typename... Args>
 auto sum(Args... args) {
@@ -1164,6 +1188,9 @@ static_assert(addOne(1) == 2);
 
 ### Lambda capture `this` by value
 Capturing `this` in a lambda's environment was previously reference-only. An example of where this is problematic is asynchronous code using callbacks that require an object to be available, potentially past its lifetime. `*this` (C++17) will now make a copy of the current object, while `this` (C++11) continues to capture by reference.
+
+---
+
 ```c++
 struct MyObj {
   int value{ 123 };
@@ -1219,6 +1246,9 @@ namespace A::B::C {
 
 ### Structured bindings
 A proposal for de-structuring initialization, that would allow writing `auto {x, y, z} = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](#tuples), `std::pair`, [`std::array`](#stdarray), and aggregate structures.
+
+---
+
 ```c++
 using Coordinate = std::pair<int, int>;
 Coordinate origin() {
@@ -1244,6 +1274,8 @@ if (std::lock_guard<std::mutex> lk(mx); v.empty()) {
   v.push_back(val);
 }
 ```
+---
+
 ```c++
 Foo gadget(args);
 switch (auto s = gadget.status()) {
@@ -1284,6 +1316,7 @@ A character literal that begins with `u8` is a character literal of type `char`.
 ```c++
 char x = u8'x';
 ```
+---
 
 ### Direct List Initialization of Enums
 Enums can now be initialized using braced syntax.
@@ -1316,6 +1349,9 @@ std::get<1>(v); // == 12.0
 
 ### std::optional
 The class template `std::optional` manages an optional contained value, i.e. a value that may or may not be present. A common use case for optional is the return value of a function that may fail.
+
+---
+
 ```c++
 std::optional<std::string> create(bool b) {
   if (b) {
@@ -1370,6 +1406,9 @@ v; // == "trim me"
 
 ### std::invoke
 Invoke a `Callable` object with parameters. Examples of `Callable` objects are `std::function` or `std::bind` where an object can be called similarly to a regular function.
+
+---
+
 ```c++
 template <typename Callable>
 class Proxy {
@@ -1454,6 +1493,9 @@ m.insert(std::move(e));
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
 * [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
 * [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
+
+---
+
 * [Compiler explorer](https://godbolt.org/)
 * [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended book!
 * [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
@@ -1462,4 +1504,4 @@ m.insert(std::move(e));
 
 ---
 
-## Questions
+## Questions ?
